@@ -1,1 +1,195 @@
-"[package]\nname = \"bevy_ecs\"\nversion = \"0.19.0-dev\"\npublish = false\nedition = \"2024\"\ndescription = \"Bevy Engine's entity component system\"\nhomepage = \"https://bevy.org\"\nrepository = \"https://github.com/bevyengine/bevy\"\nlicense = \"MIT OR Apache-2.0\"\nkeywords = [\"ecs\", \"game\", \"bevy\"]\ncategories = [\"game-engines\", \"data-structures\"]\nrust-version = \"1.95.0\"\n\n[features]\ndefault = [\"std\", \"bevy_reflect\", \"async_executor\", \"backtrace\"]\n\n# Functionality\n\n## Enables multithreading support. Schedules will attempt to run systems on\n## multiple threads whenever possible.\nmulti_threaded = [\"bevy_tasks/multi_threaded\"]\n\n## Adds serialization support through `serde`.\nserialize = [\"dep:serde\", \"bevy_platform/serialize\", \"indexmap/serde\"]\n\n## Adds runtime reflection support using `bevy_reflect`.\nbevy_reflect = [\"dep:bevy_reflect\"]\n\n## Extends reflection support to functions.\nreflect_functions = [\"bevy_reflect\", \"bevy_reflect/functions\"]\nreflect_auto_register = [\"bevy_reflect\", \"bevy_reflect/auto_register\"]\n\n## Enables automatic backtrace capturing in BevyError\nbacktrace = [\"std\"]\n\n# Debugging Features\n\n## Enables `tracing` integration, allowing spans and other metrics to be reported\n## through that framework.\ntrace = [\"std\", \"dep:tracing\"]\n\n# Enable collecting debug information about systems and components to help with diagnostics\ndebug = [\"bevy_utils/debug\", \"bevy_reflect?/debug\"]\n\n## Enables a more detailed set of traces which may be noisy if left on by default.\ndetailed_trace = [\"trace\"]\n\n## Provides system stepping support, allowing them to be paused, stepped, and\n## other debug operations which can help with diagnosing certain behaviors.\nbevy_debug_stepping = []\n\n## Provides more detailed tracking of the cause of various effects within the ECS.\n## This will often provide more detailed error messages.\ntrack_location = []\n\n# Executor Backend\n\n## Uses `async-executor` as a task execution backend.\n## This backend is incompatible with `no_std` targets.\nasync_executor = [\"std\", \"bevy_tasks/async_executor\"]\n\n# Platform Compatibility\n\n## Allows access to the `std` crate. Enabling this feature will prevent compilation\n## on `no_std` targets, but provides access to certain additional features on\n## supported platforms.\nstd = [\n  \"bevy_reflect?/std\",\n  \"bevy_utils/parallel\",\n  \"bevy_utils/std\",\n  \"bitflags/std\",\n  \"concurrent-queue/std\",\n  \"fixedbitset/std\",\n  \"indexmap/std\",\n  \"serde?/std\",\n  \"nonmax/std\",\n  \"arrayvec/std\",\n  \"log/std\",\n  \"bevy_platform/std\",\n]\n\n## `critical-section` provides the building blocks for synchronization primitives\n## on all platforms, including `no_std`.\ncritical-section = [\n  \"bevy_platform/critical-section\",\n  \"bevy_reflect?/critical-section\",\n]\n\nhotpatching = [\"dep:subsecond\"]\n\n[dependencies]\nbevy_ptr = { path = \"../bevy_ptr\", version = \"0.19.0-dev\" }\nbevy_reflect = { path = \"../bevy_reflect\", version = \"0.19.0-dev\", features = [\n  \"smallvec\",\n  \"indexmap\",\n], default-features = false, optional = true }\nbevy_tasks = { path = \"../bevy_tasks\", version = \"0.19.0-dev\", default-features = false }\nbevy_utils = { path = \"../bevy_utils\", version = \"0.19.0-dev\", default-features = false }\nbevy_ecs_macros = { path = \"macros\", version = \"0.19.0-dev\" }\nbevy_platform = { path = \"../bevy_platform\", version = \"0.19.0-dev\", default-features = false, features = [\n  \"alloc\",\n] }\n\nbitflags = { version = \"2.3\", default-features = false }\nfixedbitset = { version = \"0.5\", default-features = false }\nserde = { version = \"1\", default-features = false, features = [\n  \"alloc\",\n  \"serde_derive\",\n], optional = true }\nthiserror = { version = \"2\", default-features = false }\nderive_more = { version = \"2\", default-features = false, features = [\n  \"from\",\n  \"display\",\n  \"into\",\n  \"as_ref\",\n] }\nnonmax = { version = \"0.5\", default-features = false }\narrayvec = { version = \"0.7.4\", default-features = false }\nsmallvec = { version = \"1\", default-features = false, features = [\n  \"union\",\n  \"const_generics\",\n] }\nindexmap = { version = \"2.5.0\", default-features = false }\nvariadics_please = { version = \"1.1\", default-features = false }\ntracing = { version = \"0.1\", default-features = false, optional = true }\nlog = { version = \"0.4\", default-features = false }\nbumpalo = \"3\"\nsubsecond = { version = \"0.7.0-rc.0\", optional = true }\nslotmap = { version = \"1.0.7\", default-features = false }\n\nconcurrent-queue = { version = \"2.5.0\", default-features = false }\n[target.'cfg(not(all(target_has_atomic = \"8\", target_has_atomic = \"16\", target_has_atomic = \"32\", target_has_atomic = \"64\", target_has_atomic = \"ptr\")))'.dependencies]\nconcurrent-queue = { version = \"2.5.0\", default-features = false, features = [\n  \"portable-atomic\",\n] }\n\n[dev-dependencies]\nrand = \"0.10\"\nstatic_assertions = \"1.1.0\"\nserde_test = \"1.0\"\n\n[[example]]\nname = \"events\"\npath = \"examples/events.rs\"\n\n[[example]]\nname = \"resources\"\npath = \"examples/resources.rs\"\n\n[[example]]\nname = \"change_detection\"\npath = \"examples/change_detection.rs\"\n\n[lints.clippy]\ndoc_markdown = \"warn\"\nmanual_let_else = \"warn\"\nmatch_same_arms = \"warn\"\nredundant_closure_for_method_calls = \"warn\"\nredundant_else = \"warn\"\nsemicolon_if_nothing_returned = \"warn\"\ntype_complexity = \"allow\"\nundocumented_unsafe_blocks = \"warn\"\nunwrap_or_default = \"warn\"\nneedless_lifetimes = \"allow\"\ntoo_many_arguments = \"allow\"\nnonstandard_macro_braces = \"warn\"\nprint_stdout = \"warn\"\nprint_stderr = \"warn\"\nptr_as_ptr = \"warn\"\nptr_cast_constness = \"warn\"\nref_as_ptr = \"warn\"\ntoo_long_first_doc_paragraph = \"allow\"\nstd_instead_of_core = \"allow\"\nstd_instead_of_alloc = \"warn\"\nalloc_instead_of_core = \"warn\"\nallow_attributes = \"warn\"\nallow_attributes_without_reason = \"warn\"\n\n[lints.rust]\nmissing_docs = \"warn\"\nunexpected_cfgs = { level = \"warn\", check-cfg = ['cfg(docsrs_dep)'] }\nunsafe_code = \"deny\"\nunsafe_op_in_unsafe_fn = \"warn\"\nunused_qualifications = \"warn\"\n\n\n[package.metadata.docs.rs]\nrustdoc-args = [\n  \"-Zunstable-options\",\n  \"--generate-link-to-definition\",\n  \"--generate-macro-expansion\",\n]\nall-features = true\nfeatures = [\"bevy_reflect/auto_register_static\"]\n"
+[package]
+name = "bevy_ecs"
+version = "0.19.0-dev"
+publish = false
+edition = "2024"
+description = "Bevy Engine's entity component system"
+homepage = "https://bevy.org"
+repository = "https://github.com/bevyengine/bevy"
+license = "MIT OR Apache-2.0"
+keywords = ["ecs", "game", "bevy"]
+categories = ["game-engines", "data-structures"]
+rust-version = "1.95.0"
+
+[features]
+default = ["std", "bevy_reflect", "async_executor", "backtrace"]
+
+# Functionality
+
+## Enables multithreading support. Schedules will attempt to run systems on
+## multiple threads whenever possible.
+multi_threaded = ["bevy_tasks/multi_threaded"]
+
+## Adds serialization support through `serde`.
+serialize = ["dep:serde", "bevy_platform/serialize", "indexmap/serde"]
+
+## Adds runtime reflection support using `bevy_reflect`.
+bevy_reflect = ["dep:bevy_reflect"]
+
+## Extends reflection support to functions.
+reflect_functions = ["bevy_reflect", "bevy_reflect/functions"]
+reflect_auto_register = ["bevy_reflect", "bevy_reflect/auto_register"]
+
+## Enables automatic backtrace capturing in BevyError
+backtrace = ["std"]
+
+# Debugging Features
+
+## Enables `tracing` integration, allowing spans and other metrics to be reported
+## through that framework.
+trace = ["std", "dep:tracing"]
+
+# Enable collecting debug information about systems and components to help with diagnostics
+debug = ["bevy_utils/debug", "bevy_reflect?/debug"]
+
+## Enables a more detailed set of traces which may be noisy if left on by default.
+detailed_trace = ["trace"]
+
+## Provides system stepping support, allowing them to be paused, stepped, and
+## other debug operations which can help with diagnosing certain behaviors.
+bevy_debug_stepping = []
+
+## Provides more detailed tracking of the cause of various effects within the ECS.
+## This will often provide more detailed error messages.
+track_location = []
+
+# Executor Backend
+
+## Uses `async-executor` as a task execution backend.
+## This backend is incompatible with `no_std` targets.
+async_executor = ["std", "bevy_tasks/async_executor"]
+
+# Platform Compatibility
+
+## Allows access to the `std` crate. Enabling this feature will prevent compilation
+## on `no_std` targets, but provides access to certain additional features on
+## supported platforms.
+std = [
+  "bevy_reflect?/std",
+  "bevy_utils/parallel",
+  "bevy_utils/std",
+  "bitflags/std",
+  "concurrent-queue/std",
+  "fixedbitset/std",
+  "indexmap/std",
+  "serde?/std",
+  "nonmax/std",
+  "arrayvec/std",
+  "log/std",
+  "bevy_platform/std",
+]
+
+## `critical-section` provides the building blocks for synchronization primitives
+## on all platforms, including `no_std`.
+critical-section = [
+  "bevy_platform/critical-section",
+  "bevy_reflect?/critical-section",
+]
+
+hotpatching = ["dep:subsecond"]
+
+[dependencies]
+bevy_ptr = { path = "../bevy_ptr", version = "0.19.0-dev" }
+bevy_reflect = { path = "../bevy_reflect", version = "0.19.0-dev", features = [
+  "smallvec",
+  "indexmap",
+], default-features = false, optional = true }
+bevy_tasks = { path = "../bevy_tasks", version = "0.19.0-dev", default-features = false }
+bevy_utils = { path = "../bevy_utils", version = "0.19.0-dev", default-features = false }
+bevy_ecs_macros = { path = "macros", version = "0.19.0-dev" }
+bevy_platform = { path = "../bevy_platform", version = "0.19.0-dev", default-features = false, features = [
+  "alloc",
+] }
+
+bitflags = { version = "2.3", default-features = false }
+fixedbitset = { version = "0.5", default-features = false }
+serde = { version = "1", default-features = false, features = [
+  "alloc",
+  "serde_derive",
+], optional = true }
+thiserror = { version = "2", default-features = false }
+derive_more = { version = "2", default-features = false, features = [
+  "from",
+  "display",
+  "into",
+  "as_ref",
+] }
+nonmax = { version = "0.5", default-features = false }
+arrayvec = { version = "0.7.4", default-features = false }
+smallvec = { version = "1", default-features = false, features = [
+  "union",
+  "const_generics",
+] }
+indexmap = { version = "2.5.0", default-features = false }
+variadics_please = { version = "1.1", default-features = false }
+tracing = { version = "0.1", default-features = false, optional = true }
+log = { version = "0.4", default-features = false }
+bumpalo = "3"
+subsecond = { version = "0.7.0-rc.0", optional = true }
+slotmap = { version = "1.0.7", default-features = false }
+
+concurrent-queue = { version = "2.5.0", default-features = false }
+[target.'cfg(not(all(target_has_atomic = "8", target_has_atomic = "16", target_has_atomic = "32", target_has_atomic = "64", target_has_atomic = "ptr")))'.dependencies]
+concurrent-queue = { version = "2.5.0", default-features = false, features = [
+  "portable-atomic",
+] }
+
+[dev-dependencies]
+rand = "0.10"
+static_assertions = "1.1.0"
+serde_test = "1.0"
+
+[[example]]
+name = "events"
+path = "examples/events.rs"
+
+[[example]]
+name = "resources"
+path = "examples/resources.rs"
+
+[[example]]
+name = "change_detection"
+path = "examples/change_detection.rs"
+
+[lints.clippy]
+doc_markdown = "warn"
+manual_let_else = "warn"
+match_same_arms = "warn"
+redundant_closure_for_method_calls = "warn"
+redundant_else = "warn"
+semicolon_if_nothing_returned = "warn"
+type_complexity = "allow"
+undocumented_unsafe_blocks = "warn"
+unwrap_or_default = "warn"
+needless_lifetimes = "allow"
+too_many_arguments = "allow"
+nonstandard_macro_braces = "warn"
+print_stdout = "warn"
+print_stderr = "warn"
+ptr_as_ptr = "warn"
+ptr_cast_constness = "warn"
+ref_as_ptr = "warn"
+too_long_first_doc_paragraph = "allow"
+std_instead_of_core = "allow"
+std_instead_of_alloc = "warn"
+alloc_instead_of_core = "warn"
+allow_attributes = "warn"
+allow_attributes_without_reason = "warn"
+
+[lints.rust]
+missing_docs = "warn"
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(docsrs_dep)'] }
+unsafe_code = "deny"
+unsafe_op_in_unsafe_fn = "warn"
+unused_qualifications = "warn"
+
+
+[package.metadata.docs.rs]
+rustdoc-args = [
+  "-Zunstable-options",
+  "--generate-link-to-definition",
+  "--generate-macro-expansion",
+]
+all-features = true
+features = ["bevy_reflect/auto_register_static"]
+
